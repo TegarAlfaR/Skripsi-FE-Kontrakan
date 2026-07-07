@@ -8,7 +8,13 @@ import toast from "react-hot-toast";
 import { register } from "@/services/auth";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 
-import { FaHouse, FaUser, FaPhone, FaBuilding } from "react-icons/fa6";
+import {
+  FaHouse,
+  FaUser,
+  FaPhone,
+  FaBuilding,
+  FaArrowLeft,
+} from "react-icons/fa6";
 
 import {
   MdOutlineEmail,
@@ -17,6 +23,36 @@ import {
 } from "react-icons/md";
 
 import { RiLockPasswordLine } from "react-icons/ri";
+
+// Design tokens shared with the rest of the app.
+function DesignTokens() {
+  return (
+    <style jsx global>{`
+      @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap");
+
+      .font-display {
+        font-family: "Fraunces", serif;
+        font-optical-sizing: auto;
+      }
+      .font-body {
+        font-family: "Inter", sans-serif;
+      }
+      .focus-ring:focus-visible {
+        outline: 2px solid #b98a3d;
+        outline-offset: 2px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+        }
+      }
+    `}</style>
+  );
+}
+
+const INPUT_CLASS =
+  "w-full rounded-xl border border-[#D8D3C6] py-3 pl-12 pr-4 text-[#1F2723] placeholder:text-[#8C8578] focus:border-[#2F5D50] focus:ring-2 focus:ring-[#2F5D50]/15 outline-none transition";
 
 export default function Register() {
   const router = useRouter();
@@ -104,27 +140,31 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-100 flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl p-8">
+    <div className="min-h-screen bg-[#F6F4EE] flex items-center justify-center px-4 py-10 font-body">
+      <DesignTokens />
+
+      <div className="w-full max-w-2xl bg-white rounded-3xl border border-[#E4E0D6] shadow-xl p-8">
         {/* Logo */}
 
         <div className="flex justify-center">
-          <div className="w-20 h-20 rounded-full bg-emerald-600 flex items-center justify-center shadow-lg">
-            <FaHouse className="text-white text-3xl" />
+          <div className="w-20 h-20 rounded-full bg-[#1F2723] flex items-center justify-center">
+            <FaHouse className="text-[#B98A3D] text-3xl" />
           </div>
         </div>
 
-        <h1 className="text-3xl font-bold text-center mt-5 text-gray-800">
+        <h1 className="font-display text-3xl font-semibold text-center mt-5 text-[#1F2723]">
           Kontrakan Al-Amin
         </h1>
 
-        <p className="text-center text-gray-500 mt-2">Buat akun baru</p>
+        <p className="text-center text-[#8C8578] mt-2">Buat akun baru</p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
           {/* ROLE */}
 
           <div>
-            <label className="block mb-3 font-semibold">Daftar Sebagai</label>
+            <label className="block mb-3 font-semibold text-sm text-[#1F2723]">
+              Daftar Sebagai
+            </label>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* TENANT */}
@@ -137,29 +177,31 @@ export default function Register() {
                     role: "tenant",
                   })
                 }
-                className={`rounded-2xl border-2 p-5 transition ${
+                className={`rounded-2xl border-2 p-5 transition focus-ring ${
                   form.role === "tenant"
-                    ? "border-emerald-600 bg-emerald-50 shadow-md"
-                    : "border-gray-200 hover:border-emerald-400"
+                    ? "border-[#2F5D50] bg-[#2F5D50]/5 shadow-sm"
+                    : "border-[#E4E0D6] hover:border-[#2F5D50]/40"
                 }`}
               >
                 <div className="flex justify-center">
                   <div
-                    className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                      form.role === "tenant" ? "bg-emerald-600" : "bg-gray-100"
+                    className={`w-16 h-16 rounded-full flex items-center justify-center transition ${
+                      form.role === "tenant" ? "bg-[#2F5D50]" : "bg-[#F6F4EE]"
                     }`}
                   >
                     <FaUser
                       className={`text-2xl ${
-                        form.role === "tenant" ? "text-white" : "text-gray-500"
+                        form.role === "tenant" ? "text-white" : "text-[#8C8578]"
                       }`}
                     />
                   </div>
                 </div>
 
-                <h2 className="mt-4 font-semibold text-lg">Tenant</h2>
+                <h2 className="mt-4 font-display font-semibold text-lg text-[#1F2723]">
+                  Tenant
+                </h2>
 
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="text-sm text-[#8C8578] mt-2">
                   Saya ingin mencari kontrakan.
                 </p>
               </button>
@@ -174,29 +216,31 @@ export default function Register() {
                     role: "owner",
                   })
                 }
-                className={`rounded-2xl border-2 p-5 transition ${
+                className={`rounded-2xl border-2 p-5 transition focus-ring ${
                   form.role === "owner"
-                    ? "border-emerald-600 bg-emerald-50 shadow-md"
-                    : "border-gray-200 hover:border-emerald-400"
+                    ? "border-[#2F5D50] bg-[#2F5D50]/5 shadow-sm"
+                    : "border-[#E4E0D6] hover:border-[#2F5D50]/40"
                 }`}
               >
                 <div className="flex justify-center">
                   <div
-                    className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                      form.role === "owner" ? "bg-emerald-600" : "bg-gray-100"
+                    className={`w-16 h-16 rounded-full flex items-center justify-center transition ${
+                      form.role === "owner" ? "bg-[#2F5D50]" : "bg-[#F6F4EE]"
                     }`}
                   >
                     <FaBuilding
                       className={`text-2xl ${
-                        form.role === "owner" ? "text-white" : "text-gray-500"
+                        form.role === "owner" ? "text-white" : "text-[#8C8578]"
                       }`}
                     />
                   </div>
                 </div>
 
-                <h2 className="mt-4 font-semibold text-lg">Owner</h2>
+                <h2 className="mt-4 font-display font-semibold text-lg text-[#1F2723]">
+                  Owner
+                </h2>
 
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="text-sm text-[#8C8578] mt-2">
                   Saya ingin menyewakan kontrakan.
                 </p>
               </button>
@@ -206,7 +250,7 @@ export default function Register() {
           {/* Nama */}
 
           <div className="relative">
-            <FaUser className="absolute left-4 top-4 text-gray-400" />
+            <FaUser className="absolute left-4 top-4 text-[#8C8578]" />
 
             <input
               type="text"
@@ -214,14 +258,14 @@ export default function Register() {
               placeholder="Nama Lengkap"
               value={form.name}
               onChange={handleChange}
-              className="w-full rounded-xl border py-3 pl-12 pr-4 focus:ring-2 focus:ring-emerald-200 outline-none"
+              className={INPUT_CLASS}
             />
           </div>
 
           {/* Email */}
 
           <div className="relative">
-            <MdOutlineEmail className="absolute left-4 top-4 text-gray-400 text-xl" />
+            <MdOutlineEmail className="absolute left-4 top-4 text-[#8C8578] text-xl" />
 
             <input
               type="email"
@@ -229,14 +273,14 @@ export default function Register() {
               placeholder="Email"
               value={form.email}
               onChange={handleChange}
-              className="w-full rounded-xl border py-3 pl-12 pr-4 focus:ring-2 focus:ring-emerald-200 outline-none"
+              className={INPUT_CLASS}
             />
           </div>
 
           {/* Phone */}
 
           <div className="relative">
-            <FaPhone className="absolute left-4 top-4 text-gray-400" />
+            <FaPhone className="absolute left-4 top-4 text-[#8C8578]" />
 
             <input
               type="text"
@@ -244,14 +288,14 @@ export default function Register() {
               placeholder="Nomor Telepon"
               value={form.phone_number}
               onChange={handleChange}
-              className="w-full rounded-xl border py-3 pl-12 pr-4 focus:ring-2 focus:ring-emerald-200 outline-none"
+              className={INPUT_CLASS}
             />
           </div>
 
           {/* Password */}
 
           <div className="relative">
-            <RiLockPasswordLine className="absolute left-4 top-4 text-gray-400 text-xl" />
+            <RiLockPasswordLine className="absolute left-4 top-4 text-[#8C8578] text-xl" />
 
             <input
               type={showPassword ? "text" : "password"}
@@ -259,18 +303,19 @@ export default function Register() {
               placeholder="Password"
               value={form.password}
               onChange={handleChange}
-              className="w-full rounded-xl border py-3 pl-12 pr-12 focus:ring-2 focus:ring-emerald-200 outline-none"
+              className={`${INPUT_CLASS} pr-12`}
             />
 
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-4"
+              className="absolute right-4 top-4 text-[#8C8578] hover:text-[#1F2723] transition focus-ring rounded"
+              aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
             >
               {showPassword ? (
-                <MdOutlineVisibilityOff size={22} />
-              ) : (
                 <MdOutlineVisibility size={22} />
+              ) : (
+                <MdOutlineVisibilityOff size={22} />
               )}
             </button>
           </div>
@@ -278,7 +323,7 @@ export default function Register() {
           {/* Confirm Password */}
 
           <div className="relative">
-            <RiLockPasswordLine className="absolute left-4 top-4 text-gray-400 text-xl" />
+            <RiLockPasswordLine className="absolute left-4 top-4 text-[#8C8578] text-xl" />
 
             <input
               type={showConfirmPassword ? "text" : "password"}
@@ -286,18 +331,21 @@ export default function Register() {
               placeholder="Konfirmasi Password"
               value={form.confirmPassword}
               onChange={handleChange}
-              className="w-full rounded-xl border py-3 pl-12 pr-12 focus:ring-2 focus:ring-emerald-200 outline-none"
+              className={`${INPUT_CLASS} pr-12`}
             />
 
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-4 top-4"
+              className="absolute right-4 top-4 text-[#8C8578] hover:text-[#1F2723] transition focus-ring rounded"
+              aria-label={
+                showConfirmPassword ? "Sembunyikan password" : "Tampilkan password"
+              }
             >
               {showConfirmPassword ? (
-                <MdOutlineVisibilityOff size={22} />
-              ) : (
                 <MdOutlineVisibility size={22} />
+              ) : (
+                <MdOutlineVisibilityOff size={22} />
               )}
             </button>
           </div>
@@ -307,7 +355,7 @@ export default function Register() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 transition text-white py-3 rounded-xl font-semibold flex justify-center items-center gap-3 disabled:bg-gray-400"
+            className="w-full bg-[#2F5D50] hover:bg-[#24463C] transition text-white py-3 rounded-xl font-semibold flex justify-center items-center gap-3 disabled:bg-[#B8B2A3] focus-ring"
           >
             {loading ? (
               <>
@@ -320,13 +368,22 @@ export default function Register() {
           </button>
         </form>
 
-        <div className="mt-8 text-center text-gray-500">
+        <div className="mt-8 text-center text-[#6B6459] text-sm">
           Sudah punya akun?{" "}
           <Link
             href="/login"
-            className="text-emerald-600 font-semibold hover:underline"
+            className="text-[#2F5D50] font-semibold hover:underline focus-ring rounded"
           >
             Masuk
+          </Link>
+        </div>
+        <div className="mt-5 flex justify-center">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm text-[#8C8578] hover:text-[#2F5D50] transition focus-ring rounded"
+          >
+            <FaArrowLeft size={14} />
+            Kembali ke Beranda
           </Link>
         </div>
       </div>

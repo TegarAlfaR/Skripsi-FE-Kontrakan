@@ -6,6 +6,7 @@ const axiosInstance = axios.create({
   timeout: 10000,
 });
 
+// 1. Request Interceptor (Punya kamu yang sudah ada)
 axiosInstance.interceptors.request.use((config) => {
   const token = Cookies.get("token");
 
@@ -15,5 +16,26 @@ axiosInstance.interceptors.request.use((config) => {
 
   return config;
 });
+
+// 2. Tambahkan Response Interceptor di bawah ini
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    // Jika backend melempar status 401 (Unauthorized / Sesi Habis)
+    if (error.response && error.response.status === 401) {
+      // Hapus token dan payload dari cookie client
+      Cookies.remove("token");
+      Cookies.remove("payload");
+
+      // Paksa browser mengarah kembali ke halaman login
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default axiosInstance;
