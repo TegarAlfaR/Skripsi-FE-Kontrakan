@@ -115,12 +115,10 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validate()) return;
 
     try {
       setLoading(true);
-
       const response = await register(
         form.role,
         form.name,
@@ -129,11 +127,13 @@ export default function Register() {
         form.phone_number
       );
 
-      toast.success(response.message);
-
+      toast.success("Akun berhasil dibuat! Silakan masuk.");
       router.push("/login");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Register gagal");
+      // Menangkap pesan error dari backend jika email sudah terpakai dll
+      const errMsg =
+        error.response?.data?.message || "Gagal melakukan pendaftaran";
+      toast.error(errMsg);
     } finally {
       setLoading(false);
     }
@@ -310,7 +310,9 @@ export default function Register() {
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-4 top-4 text-[#8C8578] hover:text-[#1F2723] transition focus-ring rounded"
-              aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+              aria-label={
+                showPassword ? "Sembunyikan password" : "Tampilkan password"
+              }
             >
               {showPassword ? (
                 <MdOutlineVisibility size={22} />
@@ -339,7 +341,9 @@ export default function Register() {
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className="absolute right-4 top-4 text-[#8C8578] hover:text-[#1F2723] transition focus-ring rounded"
               aria-label={
-                showConfirmPassword ? "Sembunyikan password" : "Tampilkan password"
+                showConfirmPassword
+                  ? "Sembunyikan password"
+                  : "Tampilkan password"
               }
             >
               {showConfirmPassword ? (
