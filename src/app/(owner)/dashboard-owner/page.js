@@ -19,6 +19,7 @@ import {
   FaTrash,
   FaXmark,
   FaChevronRight,
+  FaWallet,
 } from "react-icons/fa6";
 import { getUnitOwner, deleteUnit } from "@/services/unit";
 import { getAllOwnerBooking } from "@/services/booking";
@@ -36,8 +37,7 @@ const STATUS_LABEL = {
   rejected: "Ditolak",
 };
 
-// Shared type + palette setup. Kept in one place so the rest of the file
-// reads off tokens instead of scattering hex values around.
+// Shared type + palette setup
 function DesignTokens() {
   return (
     <style jsx global>{`
@@ -78,7 +78,7 @@ function DeleteModal({ unit, onConfirm, onCancel, loading }) {
         className="absolute inset-0 bg-[#1F2723]/50 backdrop-blur-sm"
         onClick={onCancel}
       />
-      <div className="relative bg-[#F6F4EE] rounded-2xl shadow-2xl p-8 w-full max-w-sm border border-[#E4E0D6]">
+      <div className="relative bg-[#F6F4EE] rounded-2xl shadow-2xl p-8 w-full max-w-sm border border-[#E4E0D6] animate-[fadeIn_0.2s_ease-out]">
         <button
           onClick={onCancel}
           className="absolute top-4 right-4 text-[#8C8578] hover:text-[#1F2723] transition focus-ring rounded"
@@ -155,8 +155,8 @@ function UnitCard({ unit, onDeleteClick }) {
   const d = unit.detail_unit;
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E4E0D6] hover:border-[#2F5D50]/40 hover:shadow-md transition overflow-hidden group">
-      <div className="relative h-44 overflow-hidden">
+    <div className="bg-white rounded-2xl border border-[#E4E0D6] hover:border-[#2F5D50]/40 hover:shadow-md transition overflow-hidden group flex flex-col h-full">
+      <div className="relative h-44 overflow-hidden shrink-0">
         <Image
           src={unit.unit_photo[0]}
           alt={`Foto ${unit.unit_name}`}
@@ -177,8 +177,8 @@ function UnitCard({ unit, onDeleteClick }) {
         </div>
       </div>
 
-      <div className="p-4">
-        <h3 className="font-display font-semibold text-[#1F2723] leading-tight text-base">
+      <div className="p-4 flex flex-col flex-1">
+        <h3 className="font-display font-semibold text-[#1F2723] leading-tight text-base line-clamp-2">
           {unit.unit_name}
         </h3>
         <p className="mt-1 text-lg font-semibold text-[#2F5D50] font-mono-num">
@@ -189,7 +189,7 @@ function UnitCard({ unit, onDeleteClick }) {
           </span>
         </p>
 
-        <div className="mt-3 flex flex-wrap gap-3 text-xs text-[#6B6459]">
+        <div className="mt-3 flex flex-wrap gap-3 text-xs text-[#6B6459] mb-auto">
           <span className="flex items-center gap-1.5">
             <FaBed className="text-[#B98A3D]" />
             {d?.bedroom ?? 0} kamar
@@ -204,19 +204,17 @@ function UnitCard({ unit, onDeleteClick }) {
           </span>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-2">
+        <div className="mt-4 grid grid-cols-2 gap-2 pt-3 border-t border-[#F6F4EE]">
           <Link href={`/dashboard-owner/units/${unit.unit_id}`}>
             <button className="w-full flex items-center justify-center gap-1.5 bg-[#2F5D50] hover:bg-[#24463C] text-white py-2 rounded-xl text-xs font-medium transition focus-ring">
-              <FaPenToSquare />
-              Edit
+              <FaPenToSquare /> Edit
             </button>
           </Link>
           <button
             onClick={() => onDeleteClick(unit)}
             className="w-full flex items-center justify-center gap-1.5 border border-[#E2B6AF] text-[#B5453D] hover:bg-[#F6DEDA]/50 py-2 rounded-xl text-xs font-medium transition focus-ring"
           >
-            <FaTrash />
-            Hapus
+            <FaTrash /> Hapus
           </button>
         </div>
       </div>
@@ -305,21 +303,20 @@ export default function DashboardOwner() {
   ];
 
   return (
-    <main className="bg-[#F6F4EE] min-h-screen font-body">
+    <main className="bg-[#F6F4EE] min-h-screen font-body pb-12">
       <DesignTokens />
 
-      {/* HERO — okupansi sebagai satu-satunya elemen yang menonjol */}
+      {/* HERO */}
       <div className="bg-[#1F2723]">
         <div className="max-w-6xl mx-auto px-6 pt-6 pb-10">
           <Link
             href="/"
             className="inline-flex items-center gap-2 text-sm text-[#B8B2A3] hover:text-white font-medium transition mb-8 focus-ring rounded"
           >
-            <FaArrowLeft />
-            Beranda
+            <FaArrowLeft /> Beranda
           </Link>
 
-          <div className="flex flex-wrap justify-between items-end gap-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
             <div>
               <p className="text-xs uppercase tracking-widest text-[#8C8578]">
                 {today}
@@ -348,22 +345,24 @@ export default function DashboardOwner() {
             </div>
 
             <Link href="/dashboard-owner/units/create">
-              <button className="flex items-center gap-2 bg-[#B98A3D] hover:bg-[#A47A34] text-white px-5 py-3 rounded-xl transition text-sm font-semibold focus-ring">
-                <FaPlus />
-                Tambah Kontrakan
+              <button className="flex items-center gap-2 bg-[#B98A3D] hover:bg-[#A47A34] text-white px-5 py-3 rounded-xl transition text-sm font-semibold focus-ring shadow-sm">
+                <FaPlus /> Tambah Kontrakan
               </button>
             </Link>
           </div>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 -mt-6 pb-8">
-        {/* LEDGER STRIP — statistik tenang, dipisah garis tipis, bukan kotak berwarna */}
-        <div className="bg-white rounded-2xl border border-[#E4E0D6] shadow-sm flex flex-wrap divide-x divide-[#E4E0D6] overflow-hidden mb-8">
+      <div className="max-w-6xl mx-auto px-6 -mt-6">
+        {/* LEDGER STRIP */}
+        <div className="bg-white rounded-2xl border border-[#E4E0D6] shadow-sm flex flex-wrap divide-y sm:divide-y-0 sm:divide-x divide-[#E4E0D6] overflow-hidden mb-8">
           {loading
             ? [...Array(4)].map((_, i) => <SkeletonLedgerStat key={i} />)
             : ledgerStats.map(({ label, value }) => (
-                <div key={label} className="flex-1 min-w-28 py-4 px-5">
+                <div
+                  key={label}
+                  className="flex-1 min-w-35 py-4 px-5 hover:bg-[#F6F4EE]/40 transition"
+                >
                   <p className="text-[11px] uppercase tracking-wider text-[#8C8578] font-medium">
                     {label}
                   </p>
@@ -379,15 +378,14 @@ export default function DashboardOwner() {
           {/* KIRI — Kontrakan Saya */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="font-display font-semibold text-[#1F2723]">
+              <h2 className="font-display font-semibold text-[#1F2723] text-lg">
                 Kontrakan Saya
               </h2>
               <Link
                 href="/dashboard-owner/units/create"
                 className="text-xs text-[#2F5D50] hover:text-[#1F2723] font-medium transition flex items-center gap-1 focus-ring rounded"
               >
-                <FaPlus className="text-xs" />
-                Tambah
+                <FaPlus className="text-xs" /> Tambah Baru
               </Link>
             </div>
 
@@ -398,7 +396,7 @@ export default function DashboardOwner() {
                 ))}
               </div>
             ) : error ? (
-              <div className="bg-white rounded-2xl border border-[#E4E0D6] p-8 text-center">
+              <div className="bg-white rounded-2xl border border-[#E4E0D6] p-8 text-center shadow-sm">
                 <p className="text-[#B5453D] text-sm">{error}</p>
                 <button
                   onClick={() => window.location.reload()}
@@ -414,7 +412,7 @@ export default function DashboardOwner() {
                   Belum ada kontrakan yang terdaftar.
                 </p>
                 <Link href="/dashboard-owner/units/create">
-                  <button className="mt-4 bg-[#2F5D50] text-white px-5 py-2 rounded-xl hover:bg-[#24463C] transition text-sm font-medium focus-ring">
+                  <button className="mt-4 bg-[#2F5D50] text-white px-5 py-2.5 rounded-xl hover:bg-[#24463C] transition text-sm font-semibold focus-ring">
                     Tambah Sekarang
                   </button>
                 </Link>
@@ -432,88 +430,114 @@ export default function DashboardOwner() {
             )}
           </div>
 
-          {/* KANAN — Booking Terbaru, gaya manifest/ledger */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="font-display font-semibold text-[#1F2723] flex items-center">
-                Booking
-                {!loading && pendingCount > 0 && (
-                  <span className="ml-2 bg-[#B98A3D] text-white text-[11px] font-mono-num font-semibold px-2 py-0.5 rounded-full">
-                    {pendingCount} baru
-                  </span>
+          {/* KANAN — Panel Navigasi Ekstra & Booking */}
+          <div className="space-y-6">
+            {/* BOOKING TERBARU */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="font-display font-semibold text-[#1F2723] text-lg flex items-center">
+                  Booking Masuk
+                  {!loading && pendingCount > 0 && (
+                    <span className="ml-2 bg-[#B98A3D] text-white text-[11px] font-mono-num font-semibold px-2 py-0.5 rounded-full">
+                      {pendingCount} baru
+                    </span>
+                  )}
+                </h2>
+                <Link
+                  href="/dashboard-owner/bookings"
+                  className="text-xs text-[#2F5D50] hover:text-[#1F2723] font-medium transition focus-ring rounded"
+                >
+                  Lihat Semua
+                </Link>
+              </div>
+
+              <div className="bg-white rounded-2xl border border-[#E4E0D6] shadow-sm overflow-hidden">
+                {loading ? (
+                  <div className="divide-y divide-[#E4E0D6]">
+                    {[...Array(3)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center gap-3 px-4 py-3 animate-pulse"
+                      >
+                        <div className="w-8 h-8 rounded-full bg-[#EFEBE1] shrink-0" />
+                        <div className="flex-1 space-y-1.5">
+                          <div className="h-3.5 w-28 bg-[#EFEBE1] rounded" />
+                          <div className="h-3 w-20 bg-[#EFEBE1] rounded" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : bookings.length === 0 ? (
+                  <div className="p-8 text-center">
+                    <FaClipboardList className="text-3xl text-[#D8D3C6] mx-auto" />
+                    <p className="mt-3 text-xs text-[#8C8578]">
+                      Belum ada booking yang masuk.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-[#E4E0D6]">
+                    {bookings.slice(0, 5).map((b) => (
+                      <Link
+                        key={b.booking_id}
+                        href={"/dashboard-owner/bookings"}
+                      >
+                        <div className="flex items-center gap-3 px-4 py-3 hover:bg-[#F6F4EE] transition focus-ring">
+                          <div className="w-8 h-8 rounded-full bg-[#1F2723] flex items-center justify-center shrink-0">
+                            <span className="text-[#B98A3D] text-xs font-display font-semibold">
+                              {b.tenant_name?.[0]?.toUpperCase() ?? "?"}
+                            </span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-[#1F2723] truncate">
+                              {b.tenant_name}
+                            </p>
+                            <p className="text-[11px] text-[#8C8578] truncate">
+                              {b.unit?.unit_name}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <span
+                              className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                                STATUS_STYLE[b.booking_status] ??
+                                "bg-[#EFEBE1] text-[#6B6459]"
+                              }`}
+                            >
+                              {STATUS_LABEL[b.booking_status] ??
+                                b.booking_status}
+                            </span>
+                            <FaChevronRight className="text-[#D8D3C6] text-[10px]" />
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
                 )}
-              </h2>
-              <Link
-                href="/dashboard-owner/bookings"
-                className="text-xs text-[#2F5D50] hover:text-[#1F2723] font-medium transition focus-ring rounded"
-              >
-                Lihat semua
-              </Link>
+              </div>
             </div>
 
-            <div className="bg-white rounded-2xl border border-[#E4E0D6] overflow-hidden">
-              {loading ? (
-                <div className="divide-y divide-[#E4E0D6]">
-                  {[...Array(4)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-3 px-4 py-3 animate-pulse"
-                    >
-                      <div className="w-8 h-8 rounded-full bg-[#EFEBE1] shrink-0" />
-                      <div className="flex-1 space-y-1.5">
-                        <div className="h-3.5 w-28 bg-[#EFEBE1] rounded" />
-                        <div className="h-3 w-20 bg-[#EFEBE1] rounded" />
-                      </div>
-                      <div className="h-5 w-16 bg-[#EFEBE1] rounded-full" />
-                    </div>
-                  ))}
-                </div>
-              ) : bookings.length === 0 ? (
-                <div className="p-8 text-center">
-                  <FaClipboardList className="text-3xl text-[#D8D3C6] mx-auto" />
-                  <p className="mt-3 text-xs text-[#8C8578]">
-                    Belum ada booking masuk.
-                  </p>
-                </div>
-              ) : (
-                <div className="divide-y divide-[#E4E0D6]">
-                  {bookings.slice(0, 6).map((b) => (
-                    <Link key={b.booking_id} href={"/dashboard-owner/bookings"}>
-                      <div className="flex items-center gap-3 px-4 py-3 hover:bg-[#F6F4EE] transition focus-ring">
-                        <div className="w-8 h-8 rounded-full bg-[#1F2723] flex items-center justify-center shrink-0">
-                          <span className="text-[#B98A3D] text-xs font-display font-semibold">
-                            {b.tenant_name?.[0]?.toUpperCase() ?? "?"}
-                          </span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-[#1F2723] truncate">
-                            {b.tenant_name}
-                          </p>
-                          <p className="text-xs text-[#8C8578] truncate">
-                            {b.unit?.unit_name}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          <span
-                            className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                              STATUS_STYLE[b.booking_status] ??
-                              "bg-[#EFEBE1] text-[#6B6459]"
-                            }`}
-                          >
-                            {STATUS_LABEL[b.booking_status] ?? b.booking_status}
-                          </span>
-                          <FaChevronRight className="text-[#D8D3C6] text-xs" />
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
+            {/* PINTU MASUK BUKU PEMBAYARAN */}
+            <div className="bg-white rounded-2xl border border-[#E4E0D6] shadow-sm p-6 flex flex-col items-center text-center">
+              <div className="w-14 h-14 bg-[#E1ECE5] text-[#2F5D50] rounded-full flex items-center justify-center mb-4">
+                <FaWallet className="text-2xl" />
+              </div>
+              <h2 className="font-display font-semibold text-[#1F2723] text-lg">
+                Buku Pembayaran
+              </h2>
+              <p className="text-sm text-[#8C8578] mt-2 mb-6 leading-relaxed">
+                Pencatatan kas manual. Pantau pemasukan dari penyewa di luar
+                sistem booking otomatis.
+              </p>
+              <Link href="/dashboard-owner/payments" className="w-full">
+                <button className="w-full flex items-center justify-center gap-2 bg-[#F6F4EE] hover:bg-[#E4E0D6] text-[#2F5D50] py-3 rounded-xl text-sm font-semibold transition focus-ring">
+                  Buka Buku Catatan <FaChevronRight className="text-xs" />
+                </button>
+              </Link>
             </div>
           </div>
         </div>
       </div>
 
+      {/* MODAL DELETE */}
       {deleteTarget && (
         <DeleteModal
           unit={deleteTarget}

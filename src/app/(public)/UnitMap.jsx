@@ -16,12 +16,7 @@ const markerIcon = new L.Icon({
 });
 
 /**
- * Reusable Leaflet map for a single unit.
- * @param {number|string} lat
- * @param {number|string} lng
- * @param {string} label - popup text (e.g. unit name)
- * @param {number} zoom
- * @param {string} heightClass - tailwind height class, default h-80
+ * UnitMap dengan tampilan Terrain (Medan)
  */
 export default function UnitMap({
   lat,
@@ -47,12 +42,18 @@ export default function UnitMap({
       center={position}
       zoom={zoom}
       scrollWheelZoom={false}
-      className={`w-full ${heightClass} z-0`}
+      className={`w-full ${heightClass} z-0 rounded-3xl overflow-hidden`}
     >
+      {/* 
+        MENGUBAH TAMPILAN KE TERRAIN:
+        Kita mengganti URL OpenStreetMap dengan URL dari Esri World Terrain.
+        Ini akan menampilkan kontur tanah dan relief medan.
+      */}
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+
       <Marker position={position} icon={markerIcon}>
         <Popup>{label}</Popup>
       </Marker>

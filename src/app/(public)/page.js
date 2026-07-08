@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import { getAllUnits } from "@/services/unit";
 
@@ -247,8 +248,12 @@ export default function Home() {
   const [units, setUnits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
+    const token = Cookies.get("token");
+    setIsLoggedIn(!!token);
+
     const fetchUnits = async () => {
       try {
         const result = await getAllUnits();
@@ -305,11 +310,13 @@ export default function Home() {
                 Lihat Kontrakan
               </button>
             </Link>
-            <Link href="/register">
-              <button className="border border-white/40 px-6 py-3 rounded-xl hover:bg-white hover:text-[#1F2723] transition font-medium focus-ring">
-                Daftar Sekarang
-              </button>
-            </Link>
+            {!isLoggedIn && (
+              <Link href="/register">
+                <button className="border border-white/40 px-6 py-3 rounded-xl hover:bg-white hover:text-[#1F2723] transition font-medium focus-ring">
+                  Daftar Sekarang
+                </button>
+              </Link>
+            )}
           </div>
         </div>
       </section>
@@ -429,21 +436,24 @@ export default function Home() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="bg-[#1F2723] text-white py-24">
-        <div className="max-w-5xl mx-auto text-center px-6">
-          <h2 className="font-display text-4xl font-semibold">
-            Siap menemukan kontrakan impian?
-          </h2>
-          <p className="mt-5 text-[#B8B2A3] text-lg">
-            Daftar sekarang dan lakukan booking kontrakan secara online.
-          </p>
-          <Link href="/register">
-            <button className="mt-10 bg-[#B98A3D] hover:bg-[#A47A34] text-white px-8 py-4 rounded-xl font-semibold transition focus-ring">
-              Daftar Sekarang
-            </button>
-          </Link>
-        </div>
-      </section>
+
+      {!isLoggedIn && (
+        <section className="bg-[#1F2723] text-white py-24">
+          <div className="max-w-5xl mx-auto text-center px-6">
+            <h2 className="font-display text-4xl font-semibold">
+              Siap menemukan kontrakan impian?
+            </h2>
+            <p className="mt-5 text-[#B8B2A3] text-lg">
+              Daftar sekarang dan lakukan booking kontrakan secara online.
+            </p>
+            <Link href="/register">
+              <button className="mt-10 bg-[#B98A3D] hover:bg-[#A47A34] text-white px-8 py-4 rounded-xl font-semibold transition focus-ring">
+                Daftar Sekarang
+              </button>
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* ── KONTAK ── */}
       <section className="bg-white py-24">
@@ -537,7 +547,8 @@ export default function Home() {
               <h3 className="text-lg font-semibold text-white">Kontak</h3>
               <div className="mt-4 space-y-3 text-sm">
                 <p className="flex items-center gap-2">
-                  <FaLocationDot className="text-[#B98A3D]" /> Bogor
+                  <FaLocationDot className="text-[#B98A3D]" /> Gang Al-Amin,
+                  Gandoang, Cileungsi, Bogor
                 </p>
                 <p className="flex items-center gap-2">
                   <FaPhone className="text-[#B98A3D]" /> 0858-1709-4923
