@@ -1,4 +1,12 @@
 /** @type {import('next').NextConfig} */
+
+// Import dulu next-pwa-nya
+const withPWA = require("next-pwa")({
+  dest: "public",
+  register: true,
+  skipWaiting: true,
+});
+
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -10,4 +18,5 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+// Gabungkan keduanya
+export default withPWA(nextConfig);
