@@ -8,8 +8,15 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig = {
-  turbopack: {}, 
-  
+  turbopack: {},
+  async rewrites() {
+    return [
+      {
+        source: '/manifest.json',
+        destination: '/manifest.json',
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
