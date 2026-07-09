@@ -8,6 +8,8 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig = {
+  turbopack: {}, 
+  
   images: {
     remotePatterns: [
       {
