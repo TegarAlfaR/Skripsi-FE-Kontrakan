@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
+import withPWAInit from 'next-pwa';
 
-// Import dulu next-pwa-nya
-const withPWA = require("next-pwa")({
-  dest: "public",
+const withPWA = withPWAInit({
+  dest: 'public',
   register: true,
   skipWaiting: true,
 });
@@ -18,5 +18,4 @@ const nextConfig = {
   },
 };
 
-// Gabungkan keduanya
 export default withPWA(nextConfig);
