@@ -175,14 +175,16 @@ export default function CreatePaymentPage() {
                 accept="image/*"
                 capture="environment"
                 onChange={handlePhotoChange}
-                className="hidden"
+                className="absolute w-px h-px p-0 -m-px overflow-hidden opacity-0 pointer-events-none"
+                style={{ clip: "rect(0, 0, 0, 0)" }}
               />
               <input
                 ref={galleryInputRef}
                 type="file"
                 accept="image/*"
                 onChange={handlePhotoChange}
-                className="hidden"
+                className="absolute w-px h-px p-0 -m-px overflow-hidden opacity-0 pointer-events-none"
+                style={{ clip: "rect(0, 0, 0, 0)" }}
               />
 
               {photoPreview ? (
