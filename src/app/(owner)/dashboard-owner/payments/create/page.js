@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import toast from "react-hot-toast";
 import { createPayment } from "@/services/payment";
 import {
@@ -12,6 +13,8 @@ import {
   FaCalendarDays,
   FaNoteSticky,
   FaCamera,
+  FaImage,
+  FaXmark,
 } from "react-icons/fa6";
 
 function DesignTokens() {
@@ -44,7 +47,27 @@ export default function CreatePaymentPage() {
     notes: "",
   });
   const [photo, setPhoto] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Ref terpisah untuk kamera & galeri
+  const cameraInputRef = useRef(null);
+  const galleryInputRef = useRef(null);
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setPhoto(file);
+    setPhotoPreview(URL.createObjectURL(file));
+    // reset value biar bisa pilih file yang sama lagi kalau perlu
+    e.target.value = "";
+  };
+
+  const removePhoto = () => {
+    setPhoto(null);
+    if (photoPreview) URL.revokeObjectURL(photoPreview);
+    setPhotoPreview(null);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -139,19 +162,74 @@ export default function CreatePaymentPage() {
               </div>
             </div>
 
+            {/* ─── Foto Bukti Bayar ─────────────────────────────── */}
             <div>
               <label className="block text-xs font-medium text-[#6B6459] mb-1">
                 Foto Bukti Bayar
               </label>
+
+              {/* Hidden inputs */}
               <input
+                ref={cameraInputRef}
                 type="file"
                 accept="image/*"
                 capture="environment"
-                onChange={(e) => setPhoto(e.target.files[0])}
-                className="w-full text-sm text-[#8C8578] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#E1ECE5] file:text-[#2F5D50] hover:file:bg-[#d0e4d7] cursor-pointer"
+                onChange={handlePhotoChange}
+                className="hidden"
               />
-              <p className="text-[10px] text-[#8C8578] mt-1">
-                *Gunakan kamera atau pilih dari galeri
+              <input
+                ref={galleryInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                className="hidden"
+              />
+
+              {photoPreview ? (
+                <div className="relative w-full rounded-xl overflow-hidden border border-[#D8D3C6] bg-[#F6F4EE]">
+                  <div className="relative w-full h-48">
+                    <Image
+                      src={photoPreview}
+                      alt="Preview bukti bayar"
+                      fill
+                      className="object-contain"
+                      unoptimized
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={removePhoto}
+                    className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 hover:bg-black/75 text-white flex items-center justify-center transition"
+                    aria-label="Hapus foto"
+                  >
+                    <FaXmark className="text-xs" />
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => cameraInputRef.current?.click()}
+                    className="flex flex-col items-center justify-center gap-2 py-5 rounded-xl border border-dashed border-[#D8D3C6] text-[#6B6459] hover:border-[#2F5D50] hover:text-[#2F5D50] hover:bg-[#F6F4EE] transition"
+                  >
+                    <FaCamera className="text-lg" />
+                    <span className="text-xs font-medium">Ambil Foto</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => galleryInputRef.current?.click()}
+                    className="flex flex-col items-center justify-center gap-2 py-5 rounded-xl border border-dashed border-[#D8D3C6] text-[#6B6459] hover:border-[#2F5D50] hover:text-[#2F5D50] hover:bg-[#F6F4EE] transition"
+                  >
+                    <FaImage className="text-lg" />
+                    <span className="text-xs font-medium">
+                      Pilih dari Galeri
+                    </span>
+                  </button>
+                </div>
+              )}
+
+              <p className="text-[10px] text-[#8C8578] mt-1.5">
+                *Pilih ambil foto langsung atau unggah dari file yang sudah ada
               </p>
             </div>
 
