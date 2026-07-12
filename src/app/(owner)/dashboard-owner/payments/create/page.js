@@ -168,23 +168,12 @@ export default function CreatePaymentPage() {
                 Foto Bukti Bayar
               </label>
 
-              {/* Hidden inputs */}
               <input
-                ref={cameraInputRef}
-                type="file"
-                accept="image/*"
-                capture="environment"
-                onChange={handlePhotoChange}
-                className="absolute w-px h-px p-0 -m-px overflow-hidden opacity-0 pointer-events-none"
-                style={{ clip: "rect(0, 0, 0, 0)" }}
-              />
-              <input
-                ref={galleryInputRef}
+                id="photo-input"
                 type="file"
                 accept="image/*"
                 onChange={handlePhotoChange}
-                className="absolute w-px h-px p-0 -m-px overflow-hidden opacity-0 pointer-events-none"
-                style={{ clip: "rect(0, 0, 0, 0)" }}
+                className="sr-only"
               />
 
               {photoPreview ? (
@@ -208,30 +197,19 @@ export default function CreatePaymentPage() {
                   </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => cameraInputRef.current?.click()}
-                    className="flex flex-col items-center justify-center gap-2 py-5 rounded-xl border border-dashed border-[#D8D3C6] text-[#6B6459] hover:border-[#2F5D50] hover:text-[#2F5D50] hover:bg-[#F6F4EE] transition"
-                  >
-                    <FaCamera className="text-lg" />
-                    <span className="text-xs font-medium">Ambil Foto</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => galleryInputRef.current?.click()}
-                    className="flex flex-col items-center justify-center gap-2 py-5 rounded-xl border border-dashed border-[#D8D3C6] text-[#6B6459] hover:border-[#2F5D50] hover:text-[#2F5D50] hover:bg-[#F6F4EE] transition"
-                  >
-                    <FaImage className="text-lg" />
-                    <span className="text-xs font-medium">
-                      Pilih dari Galeri
-                    </span>
-                  </button>
-                </div>
+                <label
+                  htmlFor="photo-input"
+                  className="flex flex-col items-center justify-center gap-2 py-8 rounded-xl border border-dashed border-[#D8D3C6] text-[#6B6459] hover:border-[#2F5D50] hover:text-[#2F5D50] hover:bg-[#F6F4EE] transition cursor-pointer"
+                >
+                  <FaImage className="text-xl" />
+                  <span className="text-xs font-medium">
+                    Pilih Foto Bukti Bayar
+                  </span>
+                </label>
               )}
 
               <p className="text-[10px] text-[#8C8578] mt-1.5">
-                *Pilih ambil foto langsung atau unggah dari file yang sudah ada
+                *Unggah foto bukti bayar dari file yang sudah tersimpan
               </p>
             </div>
 
