@@ -17,6 +17,7 @@ import {
   FaCalendarDays,
   FaNoteSticky,
   FaCircleNotch,
+  FaCamera,
 } from "react-icons/fa6";
 
 export default function DetailPaymentPage({ params }) {
@@ -30,8 +31,9 @@ export default function DetailPaymentPage({ params }) {
     payment_date: "",
     notes: "",
   });
+  const [newPhoto, setNewPhoto] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isProcessing, setIsProcessing] = useState(false); // Untuk overlay loading
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -58,16 +60,24 @@ export default function DetailPaymentPage({ params }) {
   };
 
   const handleUpdate = async () => {
-    setIsProcessing(true); // Kunci layar agar user menunggu
+    setIsProcessing(true);
+    const formData = new FormData();
+    formData.append("tenant_name", form.tenant_name);
+    formData.append("amount", form.amount);
+    formData.append("payment_date", form.payment_date);
+    formData.append("notes", form.notes);
+    if (newPhoto) formData.append("payment_photo", newPhoto);
+
     try {
-      await updatePayment(id, form); // Tunggu sampai selesai
-      await fetchData(); // Ambil data terbaru dari server
+      await updatePayment(id, formData);
+      await fetchData();
+      setNewPhoto(null);
       toast.success("Berhasil diperbarui");
-      setIsEditing(false); // Baru masuk ke mode view
+      setIsEditing(false);
     } catch (err) {
       toast.error("Gagal memperbarui");
     } finally {
-      setIsProcessing(false); // Buka kunci
+      setIsProcessing(false);
     }
   };
 
@@ -80,7 +90,6 @@ export default function DetailPaymentPage({ params }) {
 
   return (
     <main className="min-h-screen bg-[#F6F4EE] p-6 font-body relative">
-      {/* LOADING OVERLAY */}
       {isProcessing && (
         <div className="absolute inset-0 z-50 bg-[#F6F4EE]/80 backdrop-blur-sm flex flex-col items-center justify-center">
           <FaCircleNotch className="text-[#2F5D50] text-4xl animate-spin mb-3" />
@@ -131,6 +140,19 @@ export default function DetailPaymentPage({ params }) {
                 className="w-full border border-[#D8D3C6] p-3 rounded-xl"
                 placeholder="Catatan"
               />
+
+              <div className="pt-2">
+                <label className="text-xs text-[#6B6459]">
+                  Ganti Foto Bukti:
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setNewPhoto(e.target.files[0])}
+                  className="w-full mt-2 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-[#E1ECE5] file:text-[#2F5D50]"
+                />
+              </div>
+
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={() => setIsEditing(false)}
@@ -142,15 +164,22 @@ export default function DetailPaymentPage({ params }) {
                   onClick={handleUpdate}
                   className="flex-1 bg-[#2F5D50] text-white py-3 rounded-xl font-semibold"
                 >
-                  Simpan Perubahan
+                  Simpan
                 </button>
               </div>
             </div>
           ) : (
             <>
               <div className="flex items-center gap-4 mb-8">
-                <div className="w-16 h-16 rounded-full bg-[#E1ECE5] text-[#2F5D50] flex items-center justify-center">
-                  <FaUser className="text-2xl" />
+                <div className="w-16 h-16 rounded-full bg-[#E1ECE5] text-[#2F5D50] flex items-center justify-center overflow-hidden">
+                  {payment.payment_photo ? (
+                    <img
+                      src={payment.payment_photo}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <FaUser className="text-2xl" />
+                  )}
                 </div>
                 <div>
                   <h2 className="text-2xl font-display font-semibold">
@@ -161,9 +190,24 @@ export default function DetailPaymentPage({ params }) {
                   </p>
                 </div>
               </div>
+
+              {/* Tampilan Bukti Foto */}
+              {payment.payment_photo && (
+                <div className="mb-6">
+                  <p className="text-[11px] text-[#8C8578] uppercase mb-2">
+                    Foto Bukti
+                  </p>
+                  <img
+                    src={payment.payment_photo}
+                    alt="Bukti Bayar"
+                    className="w-full rounded-2xl border shadow-sm"
+                  />
+                </div>
+              )}
+
               <div className="space-y-5 text-sm">
                 <div className="flex gap-4 p-4 bg-[#F6F4EE] rounded-xl">
-                  <FaRupiahSign className="text-[#B98A3D] text-lg" />{" "}
+                  <FaRupiahSign className="text-[#B98A3D] text-lg" />
                   <div>
                     <p className="text-[11px] text-[#8C8578] uppercase">
                       Jumlah
@@ -174,7 +218,7 @@ export default function DetailPaymentPage({ params }) {
                   </div>
                 </div>
                 <div className="flex gap-4 p-4 bg-[#F6F4EE] rounded-xl">
-                  <FaCalendarDays className="text-[#B98A3D] text-lg" />{" "}
+                  <FaCalendarDays className="text-[#B98A3D] text-lg" />
                   <div>
                     <p className="text-[11px] text-[#8C8578] uppercase">
                       Tanggal
@@ -186,22 +230,12 @@ export default function DetailPaymentPage({ params }) {
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-4 p-4 bg-[#F6F4EE] rounded-xl">
-                  <FaNoteSticky className="text-[#B98A3D] text-lg" />{" "}
-                  <div>
-                    <p className="text-[11px] text-[#8C8578] uppercase">
-                      Catatan
-                    </p>
-                    <p className="font-semibold text-[#1F2723]">
-                      {payment.notes || "-"}
-                    </p>
-                  </div>
-                </div>
               </div>
+
               <div className="flex gap-3 mt-10">
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="flex-1 border border-[#D8D3C6] hover:bg-[#F6F4EE] py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
+                  className="flex-1 border py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
                 >
                   <FaPenToSquare /> Edit
                 </button>

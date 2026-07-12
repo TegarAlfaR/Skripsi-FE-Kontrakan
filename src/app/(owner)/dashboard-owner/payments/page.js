@@ -113,12 +113,23 @@ export default function PaymentListPage() {
                 >
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-[#E1ECE5] text-[#2F5D50] flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-full bg-[#E1ECE5] text-[#2F5D50] flex items-center justify-center relative">
                         <FaRupiahSign />
+                        {p.payment_photo && (
+                          <div
+                            className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#B98A3D] rounded-full border-2 border-white"
+                            title="Ada bukti foto"
+                          ></div>
+                        )}
                       </div>
                       <div>
-                        <h3 className="font-semibold text-[#1F2723]">
+                        <h3 className="font-semibold text-[#1F2723] flex items-center gap-2">
                           {p.tenant_name}
+                          {p.payment_photo && (
+                            <span className="text-[10px] bg-[#E1ECE5] text-[#2F5D50] px-1.5 py-0.5 rounded uppercase">
+                              Bukti
+                            </span>
+                          )}
                         </h3>
                         <p className="text-xs text-[#8C8578] flex items-center gap-2 mt-0.5">
                           <FaCalendarDays />{" "}

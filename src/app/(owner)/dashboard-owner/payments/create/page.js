@@ -11,6 +11,7 @@ import {
   FaRupiahSign,
   FaCalendarDays,
   FaNoteSticky,
+  FaCamera,
 } from "react-icons/fa6";
 
 function DesignTokens() {
@@ -42,13 +43,22 @@ export default function CreatePaymentPage() {
     payment_date: "",
     notes: "",
   });
+  const [photo, setPhoto] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    const formData = new FormData();
+    formData.append("tenant_name", form.tenant_name);
+    formData.append("amount", form.amount);
+    formData.append("payment_date", form.payment_date);
+    formData.append("notes", form.notes);
+    if (photo) formData.append("payment_photo", photo);
+
     try {
-      await createPayment(form);
+      await createPayment(formData);
       toast.success("Catatan pembayaran berhasil disimpan");
       router.push("/dashboard-owner/payments");
     } catch (err) {
@@ -127,6 +137,22 @@ export default function CreatePaymentPage() {
                   className="input-field"
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-[#6B6459] mb-1">
+                Foto Bukti Bayar
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={(e) => setPhoto(e.target.files[0])}
+                className="w-full text-sm text-[#8C8578] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#E1ECE5] file:text-[#2F5D50] hover:file:bg-[#d0e4d7] cursor-pointer"
+              />
+              <p className="text-[10px] text-[#8C8578] mt-1">
+                *Gunakan kamera atau pilih dari galeri
+              </p>
             </div>
 
             <div>
