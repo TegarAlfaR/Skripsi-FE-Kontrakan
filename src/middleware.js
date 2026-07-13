@@ -1,11 +1,22 @@
 import { NextResponse } from "next/server";
 
+function getRoleFromToken(token) {
+  try {
+    const payload = token.split(".")[1];
+    const decoded = JSON.parse(
+      Buffer.from(payload, "base64").toString("utf-8")
+    );
+    return decoded.role;
+  } catch (error) {
+    return null;
+  }
+}
+
 export function middleware(request) {
-  const token = request.cookies.get("token");
+  const token = request.cookies.get("token")?.value;
   const { pathname } = request.nextUrl;
 
   const publicRoutes = ["/", "/login", "/register"];
-
   const isPublicRoute =
     publicRoutes.includes(pathname) || pathname.startsWith("/units/");
 
@@ -15,6 +26,21 @@ export function middleware(request) {
 
   if (!token) {
     return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  const role = getRoleFromToken(token);
+
+  const roleRoutes = {
+    owner: ["/dashboard-owner"],
+    admin: ["/dashboard-admin"],
+    tenant: ["/booking", "/booking-history"],
+  };
+
+  for (const [routeRole, prefixes] of Object.entries(roleRoutes)) {
+    const isRestricted = prefixes.some((p) => pathname.startsWith(p));
+    if (isRestricted && role !== routeRole) {
+      return NextResponse.redirect(new URL("/unauthorized", request.url));
+    }
   }
 
   return NextResponse.next();
