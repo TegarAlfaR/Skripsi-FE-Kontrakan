@@ -1,7 +1,9 @@
 import axiosInstance from "@/lib/axiosInstance";
 
-export const getPayment = async () => {
-  const res = await axiosInstance.get("/payment");
+export const getPayment = async (rentId) => {
+  const res = await axiosInstance.get("/payment", {
+    params: rentId ? { rent_id: rentId } : {},
+  });
   return res.data;
 };
 

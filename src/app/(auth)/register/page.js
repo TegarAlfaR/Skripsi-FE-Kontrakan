@@ -198,7 +198,7 @@ export default function Register() {
                 </div>
 
                 <h2 className="mt-4 font-display font-semibold text-lg text-[#1F2723]">
-                  Tenant
+                  Penyewa
                 </h2>
 
                 <p className="text-sm text-[#8C8578] mt-2">
@@ -237,7 +237,7 @@ export default function Register() {
                 </div>
 
                 <h2 className="mt-4 font-display font-semibold text-lg text-[#1F2723]">
-                  Owner
+                  Pemilik Kontrakan
                 </h2>
 
                 <p className="text-sm text-[#8C8578] mt-2">
